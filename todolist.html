@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+</head>
+<body>
+    <form name="todoForm">
+        <table>
+            <tbody>
+                <tr>
+                    <td><label for="todo">Todo:</label></td>
+                    <td><input type="text" id="todo" name="todo"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><input type="submit" value="Add"></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+  
+    <h1>ToDoList</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <td>Filter</td>
+                <td>
+                    <input type="text" name="search" id="search">
+                </td>
+            </tr>
+        </thead>
+        <tbody id="todolist">
+            <tr>
+                <td><input type="button" value="Done"></td>
+                <td>Todo</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        const todolist = [
+            "Belajar JavaScript Dasar",
+            "Belajar  JavaScript Object Oriented Programing",
+            "belajar Document Object Model",
+        ];
+
+        function cleartodolistTable() {
+            const todolistTable = document.getElementById("todolist");
+            while(todolistTable.firstChild) {
+                todolistTable.removeChild(todolistTable.firstChild);
+            }
+        }
+
+        // membuat opsi hapus dan mengembalikanya ke tbody id todolist
+        function removeTodoList(index) {
+            todolist.splice(index, 1);
+            renderTodolist();
+        }
+
+        function addTodoToTable(index, todo) {
+            const todolistTable = document.getElementById("todolist");
+
+            // membuat elemen baru pada <tr> dan kemudian akan menambahkan kolom ke <tbody id="todolist">
+            const todoRow = document.createElement("tr");
+            todolistTable.append(todoRow);
+
+            // membuat elemen baru pada td kemudian menuliskan pada input id todo
+            const todoItem = document.createElement("td");
+            todoItem.textContent = todo;
+
+            // membuat elemen baru pada td dan input yang bertype button dan valuenya alalah Done
+            // yang dimana kalau di klik akan melakukan opsi hapus
+            const todoButtonItem = document.createElement("td");
+            const todoButtonDone = document.createElement("input");
+            todoButtonDone.type = "button";
+            todoButtonDone.value = "Done";
+            todoButtonDone.onclick = function () {
+                removeTodoList(index);
+            };
+
+            // menambahkan todo button done atau inputan pada td
+            // dan dalam todorow atau tr tmbahkan td dan inputan
+            todoButtonItem.append(todoButtonDone);
+            todoRow.append(todoButtonItem, todoItem);
+        }
+
+        function renderTodolist() {
+            cleartodolistTable();
+            for (let i = 0; i < todolist.length; i++) {
+                const searchFiled = document.getElementById("search");
+                if (todolist[i].toLowerCase().includes(searchFiled.value.trim().toLowerCase())) {
+                    addTodoToTable(i, todolist[i]);
+                }
+                
+            }
+        }
+
+        // membuat even pada id todo Form ketika disubmit
+        document.forms['todoForm'].onsubmit = function (event) {
+            event.preventDefault();
+            
+            const todo = document.forms['todoForm']['todo'].value 
+            todolist.push(todo);
+            document.forms['todoForm'].reset();
+            renderTodolist();
+        }
+
+        // mengambil id search dan membuat kejadian saat kita berhenti menekan dan kejadian saat kita memulai menekan
+        // yang akan berpengaruh pada funcation renderTodolist
+        const searchFiled = document.getElementById("search");
+        searchFiled.onkeydown = renderTodolist;
+        searchFiled.onkeyup = renderTodolist;
+
+        renderTodolist();
+
+    </script>
+
+</body>
+</html>
